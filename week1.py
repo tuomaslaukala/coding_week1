@@ -1,35 +1,66 @@
 # Warmups
 def twosum(arr, target):
-    """
-    Given an array of integers, return indices of the two numbers such that they add up to a specific target.
-    If there are multiple answers, return the ones with the smaller first index and then smaller second index.
-    If there is no answer, return [-1, -1]
-    """
+
+    for i in range(len(arr)):
+        for j in range(i+1, len(arr)):
+            if arr[i] + arr[j] == target:
+              return [i, j]
     return [-1, -1]
 
 
 def foobarbaz(n):
-    """This function returns a list of the numbers from 1 ... n,
-    However, multiples of 3 will be replaced; the first one with 'foo', the second with 'bar', and the third with 'baz'.
-    This pattern will repeat. For example, if n=10, the output will be:
-    ['1', '2', 'foo', '4', '5', 'bar', '7', '8', 'baz', '10']
-    """
-    return []
+    result = []
+    counter = 0
 
+    for i in range(1, n+1):
+        if i % 3 == 0:
+            counter += 1
+            if counter % 3 == 1:
+                result.append('foo')
+            elif counter % 3 == 2:
+                result.append('bar')
+            else:
+                result.append('baz')
+        else:
+            result.append(str(i))
+
+    return result
+
+import string
 
 def sentence_palindrome(sentence):
     """
     Return true if the sentence is a palindrome. Ignore case, spaces, and punctuation.
     Hint: you can import the `string` module and `string.punctuation` to get a list of punctuation characters to ignore.
     """
-    return False
+    cleaned = ""
+    for char in sentence:
+        if char not in string.punctuation and char != ' ':
+            cleaned += char.lower()
+    
+    # Check if it's the same forwards and backwards
+    return cleaned == cleaned[::-1]
 
 
 def dyslexic_palindrome(word):
     """
     Return true if the input word is a palindrome. However, the letters d, p, b, and q are considered interchangeable.
     """
-    return False
+    dyslexic_letters = {'d', 'p', 'b', 'q'}
+    reversed_word = word[::-1]
+    
+    for i in range(len(word)):
+        left = word[i]
+        right = reversed_word[i]
+        
+        if left == right:
+            continue
+        elif left in dyslexic_letters and right in dyslexic_letters:
+            continue
+        else:
+            return False
+    
+    return True
 
 
 def local_minimums(arr):
@@ -37,7 +68,20 @@ def local_minimums(arr):
     Given an array of integers, return a list of indexes the local minimums.
     A local minimum is a number which is less than its neighbors.
     """
-    return []
+    result = []
+
+    for i in range(len(arr)):
+        if i == 0: # first number
+            if len(arr) > 1 and arr[i] < arr[i+1]:
+                result.append(i)
+        elif i == len(arr) - 1: #last number
+            if arr[i] < arr[i-1]:
+                result.append(i)        
+        else:
+            if arr[i] < arr[i-1] and arr[i] < arr[i+1]:
+                result.append(i)
+    
+    return result
 
 # Now that you're warmed up
 
@@ -46,7 +90,17 @@ def count_clumps(arr):
     Return the number of clumps in the input list.
     A clump is a series of 2 or more adjacent elements of the same value.
     """
-    return 0
+    number_of_clumps = 0
+
+    for i in range(len(arr)-1):
+        if i == 0:
+            if arr[i] == arr[i+1]:
+                number_of_clumps += 1
+        else:
+            if arr[i] == arr[i+1] and arr[i] != arr[i-1]:
+                number_of_clumps += 1
+
+    return number_of_clumps
 
 
 def zero_matrix(matrix):
@@ -64,7 +118,33 @@ def zero_matrix(matrix):
     Hint: Algorithm should be O(rows*columns) - try to avoid brute forcing.
     Hint: An empty matrix will be passed in as [[]]
     """
-    return [[]]
+    if matrix == [[]] or len(matrix) == 0:
+        return [[]]
+    
+    rows = len(matrix)
+    cols = len(matrix[0])
+    
+    zero_rows = []
+    zero_cols = []
+    
+    for i in range(rows):
+        for j in range(cols):
+            if matrix[i][j] == 0:
+                zero_rows.append(i)
+                zero_cols.append(j)
+    
+    new_matrix = []
+    
+    for i in range(rows):
+        new_row = []
+        for j in range(cols):
+            if i in zero_rows or j in zero_cols:
+                new_row.append(0)
+            else:
+                new_row.append(matrix[i][j])
+        new_matrix.append(new_row)
+    
+    return new_matrix
 
 
 def is_anagram(s1, s2):
@@ -75,4 +155,14 @@ def is_anagram(s1, s2):
 
     Reminder: Strings are just a collection of characters. Maybe thinking about them like a list will help.
     """
-    return False
+    cleaned_s1 = ""
+    for char in s1:
+        if char not in string.punctuation and char != ' ':
+            cleaned_s1 += char.lower()
+    
+    cleaned_s2 = ""
+    for char in s2:
+        if char not in string.punctuation and char != ' ':
+            cleaned_s2 += char.lower()
+    
+    return sorted(cleaned_s1) == sorted(cleaned_s2)
